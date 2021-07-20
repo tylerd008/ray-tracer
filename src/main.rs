@@ -1,3 +1,4 @@
+use ray_tracer::camera::Camera;
 use ray_tracer::color::*;
 use ray_tracer::hittable::{HitRecord, Hittable};
 use ray_tracer::hittable_list::HittableList;
@@ -5,6 +6,8 @@ use ray_tracer::ray::*;
 use ray_tracer::sphere::Sphere;
 use ray_tracer::vec3::*;
 use std::rc::Rc;
+
+use rand::{thread_rng, Rng};
 
 fn ray_color<T: Hittable>(r: Ray, world: &T) -> Color {
     let mut rec = HitRecord::new();
@@ -21,6 +24,7 @@ fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_WIDTH: usize = 400;
     const IMAGE_HEIGHT: usize = ((IMAGE_WIDTH as f64) / ASPECT_RATIO) as usize;
+    const SAMPLES_PER_PIXEL: usize = 100;
 
     //world setup
     let mut world = HittableList::new();
@@ -28,29 +32,27 @@ fn main() {
     world.add(Rc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
 
     //camera setup
-    let viewport_height = 2.0;
-    let viewport_width = ASPECT_RATIO * viewport_height;
-    let focal_length = 1.0;
-
-    let origin = Point3::new(0.0, 0.0, 0.0);
-    let horizontal = Vec3::new(viewport_width, 0.0, 0.0);
-    let vertical = Vec3::new(0.0, viewport_height, 0.0);
-    let lower_left_corner =
-        origin - horizontal / 2.0 - vertical / 2.0 - Vec3::new(0.0, 0.0, focal_length);
+    let cam = Camera::new();
 
     println!("P3\n{} {}\n 255", IMAGE_WIDTH, IMAGE_HEIGHT);
+
+    let mut rng = thread_rng();
 
     for j in (0..IMAGE_HEIGHT).rev() {
         eprintln!("Scanlines remaining: {}", j);
         for i in 0..IMAGE_WIDTH {
-            let u = (i as f64) / ((IMAGE_WIDTH - 1) as f64);
-            let v = (j as f64) / ((IMAGE_HEIGHT - 1) as f64);
-            let r = Ray::new(
-                origin,
-                lower_left_corner + u * horizontal + v * vertical - origin,
-            );
-            let pixel_color = ray_color(r, &world);
-            write_color(pixel_color);
+            let mut pixel_color = Color::new(0.0, 0.0, 0.0);
+            for _ in 0..SAMPLES_PER_PIXEL {
+                let rand1: f64 = rng.gen_range(0.0..1.0);
+                let rand2: f64 = rng.gen_range(0.0..1.0);
+                let u: f64 = (i as f64 + rand1) / ((IMAGE_WIDTH - 1) as f64);
+                let v: f64 = (j as f64 + rand2) / ((IMAGE_HEIGHT - 1) as f64);
+                let r = cam.get_ray(u, v);
+                let asdf = ray_color(r, &world);
+                //eprintln!("asdf: {}", asdf);
+                pixel_color += ray_color(r, &world);
+            }
+            write_color(pixel_color, SAMPLES_PER_PIXEL);
         }
     }
     eprintln!("Done.");

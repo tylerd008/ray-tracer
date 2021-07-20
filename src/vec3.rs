@@ -53,9 +53,9 @@ impl Vec3 {
 
 impl ops::AddAssign<Vec3> for Vec3 {
     fn add_assign(&mut self, rhs: Self) {
-        self.e0 *= rhs.e0;
-        self.e1 *= rhs.e1;
-        self.e2 *= rhs.e2;
+        self.e0 += rhs.e0;
+        self.e1 += rhs.e1;
+        self.e2 += rhs.e2;
     }
 }
 
