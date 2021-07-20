@@ -3,9 +3,9 @@ use std::ops;
 
 #[derive(Clone, Copy)]
 pub struct Vec3 {
-    e0: f64,
-    e1: f64,
-    e2: f64,
+    pub e0: f64,
+    pub e1: f64,
+    pub e2: f64,
 }
 
 impl Vec3 {
@@ -85,7 +85,7 @@ impl ops::Neg for Vec3 {
 
 impl fmt::Display for Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} {} {}", self.x(), self.y(), self.z())
+        write!(f, "{} {} {}", self.e0, self.e1, self.e2)
     }
 }
 
