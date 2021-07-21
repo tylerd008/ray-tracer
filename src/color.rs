@@ -8,9 +8,9 @@ pub fn write_color(pixel_color: Color, samples_per_pixel: usize) {
     let mut b = pixel_color.e2;
 
     let scale = 1.0 / (samples_per_pixel as f64);
-    r *= scale;
-    g *= scale;
-    b *= scale;
+    r = (scale * r).powf(0.5);
+    g = (scale * g).powf(0.5);
+    b = (scale * b).powf(0.5);
 
     println!(
         "{} {} {}",

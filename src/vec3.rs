@@ -1,3 +1,4 @@
+use rand::{thread_rng, Rng};
 use std::fmt;
 use std::ops;
 
@@ -18,6 +19,34 @@ impl Vec3 {
     }
     pub fn new(e0: f64, e1: f64, e2: f64) -> Self {
         Self { e0, e1, e2 }
+    }
+    pub fn random() -> Self {
+        let mut rng = thread_rng();
+        Self {
+            e0: rng.gen_range(0.0..1.0),
+            e1: rng.gen_range(0.0..1.0),
+            e2: rng.gen_range(0.0..1.0),
+        }
+    }
+    pub fn random_range(min: f64, max: f64) -> Self {
+        let mut rng = thread_rng();
+        Self {
+            e0: rng.gen_range(min..max),
+            e1: rng.gen_range(min..max),
+            e2: rng.gen_range(min..max),
+        }
+    }
+    pub fn random_in_unit_sphere() -> Self {
+        loop {
+            let p = Self::random_range(-1.0, 1.0);
+            if p.length_squared() >= 1.0 {
+                continue;
+            }
+            return p;
+        }
+    }
+    pub fn random_unit_vector() -> Self {
+        Self::unit_vector(Self::random_in_unit_sphere())
     }
     pub fn x(&self) -> f64 {
         self.e0

@@ -9,10 +9,15 @@ use std::rc::Rc;
 
 use rand::{thread_rng, Rng};
 
-fn ray_color<T: Hittable>(r: Ray, world: &T) -> Color {
+fn ray_color<T: Hittable>(r: Ray, world: &T, depth: usize) -> Color {
     let mut rec = HitRecord::new();
-    if world.hit(&r, 0.0, f64::INFINITY, &mut rec) {
-        return 0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0));
+
+    if depth <= 0 {
+        return Color::new(0.0, 0.0, 0.0);
+    }
+    if world.hit(&r, 0.001, f64::INFINITY, &mut rec) {
+        let target = rec.p + rec.normal + Point3::random_unit_vector();
+        return 0.5 * ray_color(Ray::new(rec.p, target - rec.p), world, depth - 1);
     }
     let unit_direction = Vec3::unit_vector(r.direction);
     let t = 0.5 * (unit_direction.y() + 1.0);
@@ -25,6 +30,7 @@ fn main() {
     const IMAGE_WIDTH: usize = 400;
     const IMAGE_HEIGHT: usize = ((IMAGE_WIDTH as f64) / ASPECT_RATIO) as usize;
     const SAMPLES_PER_PIXEL: usize = 100;
+    const MAX_DEPTH: usize = 50;
 
     //world setup
     let mut world = HittableList::new();
@@ -48,9 +54,7 @@ fn main() {
                 let u: f64 = (i as f64 + rand1) / ((IMAGE_WIDTH - 1) as f64);
                 let v: f64 = (j as f64 + rand2) / ((IMAGE_HEIGHT - 1) as f64);
                 let r = cam.get_ray(u, v);
-                let asdf = ray_color(r, &world);
-                //eprintln!("asdf: {}", asdf);
-                pixel_color += ray_color(r, &world);
+                pixel_color += ray_color(r, &world, MAX_DEPTH);
             }
             write_color(pixel_color, SAMPLES_PER_PIXEL);
         }
