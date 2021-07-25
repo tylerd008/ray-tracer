@@ -78,6 +78,16 @@ impl Vec3 {
         let len = v.length();
         v / len
     }
+
+    pub fn near_zero(&self) -> bool {
+        const S: f64 = 0.00000001;
+
+        (self.e0.abs() < S) && (self.e1.abs() < S) && (self.e2.abs() < S)
+    }
+
+    pub fn reflect(v: Vec3, n: Vec3) -> Vec3 {
+        v - (2.0 * Vec3::dot(v, n) * n)
+    }
 }
 
 impl ops::AddAssign<Vec3> for Vec3 {

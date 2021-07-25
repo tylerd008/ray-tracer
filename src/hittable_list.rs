@@ -26,14 +26,11 @@ impl Hittable for HittableList {
         let mut rec: Option<HitRecord> = None;
 
         for object in &self.objects {
-            rec = match &object.hit(r, t_min, closest_so_far) {
-                Some(record) => {
-                    closest_so_far = record.t;
-                    Some(*record)
-                }
-                None => {
-                    continue;
-                }
+            rec = if let Some(record) = object.hit(r, t_min, closest_so_far) {
+                closest_so_far = record.t;
+                Some(record)
+            } else {
+                continue;
             };
         }
         rec
