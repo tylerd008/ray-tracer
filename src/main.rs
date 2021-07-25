@@ -10,12 +10,10 @@ use std::rc::Rc;
 use rand::{thread_rng, Rng};
 
 fn ray_color<T: Hittable>(r: Ray, world: &T, depth: usize) -> Color {
-    let mut rec = HitRecord::new();
-
     if depth <= 0 {
         return Color::new(0.0, 0.0, 0.0);
     }
-    if world.hit(&r, 0.001, f64::INFINITY, &mut rec) {
+    if let Some(rec) = world.hit(&r, 0.001, f64::INFINITY) {
         let target = rec.p + rec.normal + Point3::random_unit_vector();
         return 0.5 * ray_color(Ray::new(rec.p, target - rec.p), world, depth - 1);
     }
