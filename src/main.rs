@@ -1,3 +1,4 @@
+use indicatif::{HumanDuration, ProgressBar, ProgressStyle};
 use ray_tracer::camera::Camera;
 use ray_tracer::color::*;
 use ray_tracer::hittable::{HitRecord, Hittable};
@@ -7,6 +8,7 @@ use ray_tracer::ray::*;
 use ray_tracer::sphere::Sphere;
 use ray_tracer::vec3::*;
 use std::rc::Rc;
+use std::time::Instant;
 
 use rand::{thread_rng, Rng};
 
@@ -90,7 +92,7 @@ fn main() {
     const ASPECT_RATIO: f64 = 3.0 / 2.0;
     const IMAGE_WIDTH: usize = 1200;
     const IMAGE_HEIGHT: usize = ((IMAGE_WIDTH as f64) / ASPECT_RATIO) as usize;
-    const SAMPLES_PER_PIXEL: usize = 500;
+    const SAMPLES_PER_PIXEL: usize = 10;
     const MAX_DEPTH: usize = 50;
 
     //world setup
@@ -117,9 +119,14 @@ fn main() {
     println!("P3\n{} {}\n 255", IMAGE_WIDTH, IMAGE_HEIGHT);
 
     let mut rng = thread_rng();
+    let pb = ProgressBar::new(IMAGE_HEIGHT as u64);
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {percent}% ({eta_precise})"), //idk why the colors aren't working
+    );
 
     for j in (0..IMAGE_HEIGHT).rev() {
-        eprintln!("Scanlines remaining: {}", j);
+        //eprintln!("Scanlines remaining: {}", j);
         for i in 0..IMAGE_WIDTH {
             let mut pixel_color = Color::new(0.0, 0.0, 0.0);
             for _ in 0..SAMPLES_PER_PIXEL {
@@ -132,6 +139,8 @@ fn main() {
             }
             write_color(pixel_color, SAMPLES_PER_PIXEL);
         }
+        pb.inc(1);
     }
-    eprintln!("Done.");
+    pb.finish_and_clear();
+    //eprintln!("Done.");
 }
