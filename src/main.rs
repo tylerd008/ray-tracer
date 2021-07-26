@@ -35,6 +35,7 @@ fn main() {
     const MAX_DEPTH: usize = 50;
 
     //world setup
+
     let mut world = HittableList::new();
     let mat_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
     let mat_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
@@ -68,7 +69,13 @@ fn main() {
     )));
 
     //camera setup
-    let cam = Camera::new();
+    let cam = Camera::new(
+        Point3::new(-2.0, 2.0, 1.0),
+        Point3::new(0.0, 0.0, -1.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        20.0,
+        ASPECT_RATIO,
+    );
 
     println!("P3\n{} {}\n 255", IMAGE_WIDTH, IMAGE_HEIGHT);
 
