@@ -2,6 +2,7 @@ use crate::color::Color;
 use crate::hittable::HitRecord;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
+use rand::{thread_rng, Rng};
 
 pub trait Material {
     fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<ScatterData>;
@@ -62,5 +63,54 @@ impl Material for Metal {
         } else {
             None
         }
+    }
+}
+
+pub struct Dielectric {
+    pub index_of_refraction: f64,
+}
+
+impl Dielectric {
+    pub fn new(index_of_refraction: f64) -> Self {
+        Self {
+            index_of_refraction,
+        }
+    }
+
+    fn reflectance(cosine: f64, ref_idx: f64) -> f64 {
+        let r0 = (1.0 - ref_idx) / (1.0 + ref_idx);
+        let r0 = r0 * r0;
+        return r0 + (1.0 - r0) * ((1.0 - cosine).powf(5.0));
+    }
+}
+
+impl Material for Dielectric {
+    fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<ScatterData> {
+        let refraction_ratio = if rec.front_face {
+            1.0 / self.index_of_refraction
+        } else {
+            self.index_of_refraction
+        };
+        let mut rng = thread_rng();
+
+        let unit_direction = Vec3::unit_vector(r_in.direction);
+
+        let cos_theta = Vec3::dot(-unit_direction, rec.normal).min(1.0);
+        let sin_theta = (1.0 - cos_theta * cos_theta).powf(0.5);
+
+        let cannot_refract = refraction_ratio * sin_theta > 1.0;
+        //this is true, then the snell's law equation has no solutions and so the ray reflects instead of refracting
+        let direction = if cannot_refract
+            || (Dielectric::reflectance(cos_theta, refraction_ratio) > rng.gen_range(0.0..1.0))
+        {
+            Vec3::reflect(unit_direction, rec.normal)
+        } else {
+            Vec3::refract(unit_direction, rec.normal, refraction_ratio)
+        };
+
+        Some(ScatterData {
+            attenuation: Color::new(1.0, 1.0, 1.0),
+            scattered_ray: Ray::new(rec.p, direction),
+        })
     }
 }

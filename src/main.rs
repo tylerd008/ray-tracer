@@ -2,7 +2,7 @@ use ray_tracer::camera::Camera;
 use ray_tracer::color::*;
 use ray_tracer::hittable::{HitRecord, Hittable};
 use ray_tracer::hittable_list::HittableList;
-use ray_tracer::material::{Lambertian, Metal};
+use ray_tracer::material::{Dielectric, Lambertian, Metal};
 use ray_tracer::ray::*;
 use ray_tracer::sphere::Sphere;
 use ray_tracer::vec3::*;
@@ -37,9 +37,9 @@ fn main() {
     //world setup
     let mut world = HittableList::new();
     let mat_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-    let mat_center = Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)));
-    let mat_left = Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8), 0.3));
-    let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 1.0));
+    let mat_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
+    let mat_left = Rc::new(Dielectric::new(1.5));
+    let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
 
     world.add(Rc::new(Sphere::new(
         Point3::new(0.0, -100.5, -1.0),
@@ -55,6 +55,11 @@ fn main() {
         Point3::new(-1.0, 0.0, -1.0),
         0.5,
         mat_left,
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point3::new(-1.0, 0.0, -1.0),
+        -0.4,
+        Rc::new(Dielectric::new(1.5)),
     )));
     world.add(Rc::new(Sphere::new(
         Point3::new(1.0, 0.0, -1.0),
