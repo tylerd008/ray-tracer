@@ -1,13 +1,11 @@
 [package]
-name = "ray_tracer"
+name = "graphics"
 version = "0.1.0"
-authors = ["tylerd008 <77032854+tylerd008@users.noreply.github.com>"]
+authors = ["Flossy271 <77032854+Flossy271@users.noreply.github.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-graphics = {path = "graphics"}
-
-[workspace]
-members = ["graphics"]
+rand = "0.8.4"
+indicatif = "0.16.2"
