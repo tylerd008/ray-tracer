@@ -1,8 +1,9 @@
 use crate::hittable::{HitRecord, Hittable};
 use crate::material::Material;
 use crate::ray::{Point3, Ray};
-use crate::vec3::Vec3;
+//use crate::vec3::Vec3 as DVec3;
 use std::rc::Rc;
+use vek::vec::Vec3;
 
 pub struct Sphere {
     center: Point3,
@@ -23,9 +24,9 @@ impl Sphere {
 impl Hittable for Sphere {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         let oc = r.origin - self.center;
-        let a = r.direction.length_squared();
+        let a = r.direction.magnitude_squared();
         let half_b = Vec3::dot(oc, r.direction);
-        let c = oc.length_squared() - self.radius * self.radius;
+        let c = oc.magnitude_squared() - self.radius * self.radius;
 
         let discriminant = half_b * half_b - a * c;
         if discriminant < 0.0 {

@@ -1,19 +1,19 @@
 use crate::material::Material;
 use crate::ray::{Point3, Ray};
-use crate::vec3::Vec3;
 use std::rc::Rc;
+use vek::vec::Vec3;
 
 #[derive(Clone)]
 pub struct HitRecord {
     pub p: Point3,
-    pub normal: Vec3,
+    pub normal: Vec3<f64>,
     pub mat_ptr: Rc<dyn Material>,
     pub t: f64,
     pub front_face: bool,
 }
 
 impl HitRecord {
-    pub fn set_face_normal(r: &Ray, outward_normal: Vec3) -> Vec3 {
+    pub fn set_face_normal(r: &Ray, outward_normal: Vec3<f64>) -> Vec3<f64> {
         let front_face = Vec3::dot(r.direction, outward_normal) < 0.0;
         if front_face {
             outward_normal

@@ -2,7 +2,7 @@ use graphics::camera::Camera;
 use graphics::ray::Point3;
 use graphics::render_scene;
 use graphics::scenes::random_scene;
-use graphics::vec3::Vec3;
+use vek::vec::Vec3;
 
 fn main() {
     //image dimensions

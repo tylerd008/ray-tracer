@@ -1,8 +1,9 @@
 use crate::color::Color;
 use crate::hittable::HitRecord;
 use crate::ray::Ray;
-use crate::vec3::Vec3;
+use crate::utils::*;
 use rand::{thread_rng, Rng};
+use vek::vec::Vec3;
 
 pub trait Material {
     fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<ScatterData>;
@@ -25,9 +26,9 @@ impl Lambertian {
 
 impl Material for Lambertian {
     fn scatter(&self, _r_in: &Ray, rec: &HitRecord) -> Option<ScatterData> {
-        let mut scatter_direction = rec.normal + Vec3::random_unit_vector(); //feel like i should be able to write this without needing it to be mut
+        let mut scatter_direction = rec.normal + random_unit_vector(); //feel like i should be able to write this without needing it to be mut
 
-        if scatter_direction.near_zero() {
+        if scatter_direction.is_approx_zero() {
             scatter_direction = rec.normal;
         }
 
@@ -52,8 +53,8 @@ impl Metal {
 
 impl Material for Metal {
     fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<ScatterData> {
-        let reflected = Vec3::reflect(Vec3::unit_vector(r_in.direction), rec.normal);
-        let scattered = Ray::new(rec.p, reflected + self.fuzz * Vec3::random_in_unit_sphere());
+        let reflected = unit_vector(r_in.direction).reflected(rec.normal);
+        let scattered = Ray::new(rec.p, reflected + self.fuzz * random_in_unit_sphere());
 
         if Vec3::dot(scattered.direction, rec.normal) > 0.0 {
             Some(ScatterData {
@@ -93,7 +94,7 @@ impl Material for Dielectric {
         };
         let mut rng = thread_rng();
 
-        let unit_direction = Vec3::unit_vector(r_in.direction);
+        let unit_direction = unit_vector(r_in.direction);
 
         let cos_theta = Vec3::dot(-unit_direction, rec.normal).min(1.0);
         let sin_theta = (1.0 - cos_theta * cos_theta).powf(0.5);
@@ -103,9 +104,9 @@ impl Material for Dielectric {
         let direction = if cannot_refract
             || (Dielectric::reflectance(cos_theta, refraction_ratio) > rng.gen_range(0.0..1.0))
         {
-            Vec3::reflect(unit_direction, rec.normal)
+            unit_direction.reflected(rec.normal)
         } else {
-            Vec3::refract(unit_direction, rec.normal, refraction_ratio)
+            unit_direction.refracted(rec.normal, refraction_ratio)
         };
 
         Some(ScatterData {

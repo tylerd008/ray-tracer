@@ -6,6 +6,7 @@ use crate::material::{Dielectric, Lambertian, Material, Metal};
 use crate::ray::*;
 use crate::render_scene;
 use crate::sphere::Sphere;
+use crate::utils::*;
 use crate::vec3::*;
 use indicatif::{HumanDuration, ProgressBar, ProgressStyle};
 use std::rc::Rc;
@@ -41,14 +42,14 @@ pub fn random_scene() -> HittableList {
                 b as f64 + 0.9 * rand_f64(),
             );
 
-            if (center - Point3::new(4.0, 0.2, 0.0)).length() > 0.9 {
+            if (center - Point3::new(4.0, 0.2, 0.0)).magnitude() > 0.9 {
                 let sphere_mat: Rc<dyn Material>;
                 if choose_mat < 0.8 {
-                    let albedo = Color::random() * Color::random();
+                    let albedo = random() * random();
                     sphere_mat = Rc::new(Lambertian::new(albedo));
                     world.add(Rc::new(Sphere::new(center, 0.2, sphere_mat)));
                 } else if choose_mat < 0.95 {
-                    let albedo = Color::random_range(0.5, 1.0);
+                    let albedo = random_range(0.5, 1.0);
                     let fuzz = rand_f64_range(0.0, 0.5);
                     sphere_mat = Rc::new(Metal::new(albedo, fuzz));
                     world.add(Rc::new(Sphere::new(center, 0.2, sphere_mat)));

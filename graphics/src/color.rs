@@ -1,11 +1,11 @@
-use crate::vec3::Vec3;
+use vek::vec::Vec3;
 
-pub type Color = Vec3;
+pub type Color = Vec3<f64>;
 
 pub fn write_color(pixel_color: Color, samples_per_pixel: usize) {
-    let mut r = pixel_color.e0;
-    let mut g = pixel_color.e1;
-    let mut b = pixel_color.e2;
+    let mut r = pixel_color.x;
+    let mut g = pixel_color.y;
+    let mut b = pixel_color.z;
 
     let scale = 1.0 / (samples_per_pixel as f64);
     r = (scale * r).powf(0.5);

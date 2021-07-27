@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 graphics = {path = "graphics"}
+vek = "0.15.1"
 
 [workspace]
 members = ["graphics"]

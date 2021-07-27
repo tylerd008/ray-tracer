@@ -6,6 +6,7 @@ pub mod material;
 pub mod ray;
 pub mod scenes;
 pub mod sphere;
+mod utils;
 pub mod vec3;
 
 use camera::Camera;
@@ -14,10 +15,11 @@ use color::Color;
 use hittable::Hittable;
 use hittable_list::HittableList;
 use ray::Ray;
-use vec3::Vec3;
+use utils::*;
 
 use indicatif::{HumanDuration, ProgressBar, ProgressStyle};
 use rand::{thread_rng, Rng};
+use vek::vec::Vec3;
 
 pub fn render_scene(
     image_width: usize,
@@ -66,7 +68,7 @@ fn ray_color<T: Hittable>(r: Ray, world: &T, depth: usize) -> Color {
         }
         return Color::new(0.0, 0.0, 0.0);
     }
-    let unit_direction = Vec3::unit_vector(r.direction);
-    let t = 0.5 * (unit_direction.y() + 1.0);
+    let unit_direction = unit_vector(r.direction);
+    let t = 0.5 * (unit_direction.y + 1.0);
     (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
 }

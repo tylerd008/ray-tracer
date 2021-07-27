@@ -1,14 +1,15 @@
-use crate::vec3::Vec3;
-pub type Point3 = Vec3;
+//use crate::vec3::Vec3;
+use vek::vec::Vec3;
+pub type Point3 = Vec3<f64>;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Ray {
     pub origin: Point3,
-    pub direction: Vec3,
+    pub direction: Vec3<f64>,
 }
 
 impl Ray {
-    pub fn new(origin: Point3, direction: Vec3) -> Self {
+    pub fn new(origin: Point3, direction: Vec3<f64>) -> Self {
         Self { origin, direction }
     }
 
