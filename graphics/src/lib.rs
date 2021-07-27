@@ -7,7 +7,6 @@ pub mod ray;
 pub mod scenes;
 pub mod sphere;
 mod utils;
-pub mod vec3;
 
 use camera::Camera;
 use color::write_color;
