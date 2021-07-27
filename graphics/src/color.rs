@@ -14,18 +14,8 @@ pub fn write_color(pixel_color: Color, samples_per_pixel: usize) {
 
     println!(
         "{} {} {}",
-        (256.0 * clamp(r, 0.0, 0.999)) as usize,
-        (256.0 * clamp(g, 0.0, 0.999)) as usize,
-        (256.0 * clamp(b, 0.0, 0.999)) as usize
+        (256.0 * r.clamp(0.0, 0.999)) as usize,
+        (256.0 * g.clamp(0.0, 0.999)) as usize,
+        (256.0 * b.clamp(0.0, 0.999)) as usize
     )
-}
-
-fn clamp(x: f64, min: f64, max: f64) -> f64 {
-    if x < min {
-        return min;
-    }
-    if x > max {
-        return max;
-    }
-    x
 }

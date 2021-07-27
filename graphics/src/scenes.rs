@@ -7,7 +7,6 @@ use crate::ray::*;
 use crate::render_scene;
 use crate::sphere::Sphere;
 use crate::utils::*;
-use crate::vec3::*;
 use indicatif::{HumanDuration, ProgressBar, ProgressStyle};
 use std::rc::Rc;
 use std::time::Instant;
