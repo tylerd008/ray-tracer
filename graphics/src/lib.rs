@@ -14,11 +14,11 @@ use color::Color;
 use hittable::Hittable;
 use hittable_list::HittableList;
 use ray::Ray;
+use std::time::Instant;
 use utils::*;
 
-use indicatif::{HumanDuration, ProgressBar, ProgressStyle};
+use indicatif::{FormattedDuration, ProgressBar, ProgressStyle};
 use rand::{thread_rng, Rng};
-use vek::vec::Vec3;
 
 pub fn render_scene(
     image_width: usize,
@@ -31,11 +31,12 @@ pub fn render_scene(
     println!("P3\n{} {}\n 255", image_width, image_height);
 
     let mut rng = thread_rng();
-    let pb = ProgressBar::new(image_width as u64);
+    let pb = ProgressBar::new(image_height as u64);
     pb.set_style(
         ProgressStyle::default_bar()
             .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {percent}% ({eta_precise})"), //idk why the colors aren't working
     );
+    let start = Instant::now();
 
     for j in (0..image_height).rev() {
         //eprintln!("Scanlines remaining: {}", j);
@@ -53,7 +54,9 @@ pub fn render_scene(
         }
         pb.inc(1);
     }
+    let end = start.elapsed();
     pb.finish_and_clear();
+    eprintln!("Scene rendered in {}", FormattedDuration(end));
 }
 
 fn ray_color<T: Hittable>(r: Ray, world: &T, depth: usize) -> Color {
