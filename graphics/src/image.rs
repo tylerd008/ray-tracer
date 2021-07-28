@@ -47,13 +47,13 @@ impl Image {
             ProgressStyle::default_bar()
                 .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {percent}% ({eta_precise})"), //idk why the colors aren't working
         );
-        //let start = Instant::now();
         let mut handles = vec![];
         let mut start = 0;
         for z in 0..THREAD_NUM {
             let cam = cam.clone();
             let world = world.clone();
             let id = Arc::clone(&id);
+            let pb = pb.clone();
             let end =
                 (image_height as f64 * (((z + 1) as f64) / THREAD_NUM as f64)).ceil() as usize;
             let handle = thread::spawn(move || {
@@ -75,6 +75,7 @@ impl Image {
                             image_data[z].push(pixel);
                         }
                     }
+                    pb.inc(1);
                 }
             });
             start = end;
