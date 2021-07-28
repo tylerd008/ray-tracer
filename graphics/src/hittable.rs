@@ -1,13 +1,14 @@
 use crate::material::Material;
 use crate::ray::{Point3, Ray};
 use std::rc::Rc;
+use std::sync::Arc;
 use vek::vec::Vec3;
 
 #[derive(Clone)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vec3<f64>,
-    pub mat_ptr: Rc<dyn Material>,
+    pub mat_ptr: Arc<dyn Material + Send + Sync>,
     pub t: f64,
     pub front_face: bool,
 }

@@ -1,4 +1,3 @@
-//use crate::vec3::Vec3;
 use vek::vec::Vec3;
 pub type Point3 = Vec3<f64>;
 

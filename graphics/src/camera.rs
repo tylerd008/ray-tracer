@@ -1,8 +1,8 @@
 use crate::ray::{Point3, Ray};
-//use crate::vec3::Vec3;
 use crate::utils::*;
 use vek::vec::Vec3;
 
+#[derive(Clone)]
 pub struct Camera {
     origin: Point3,
     lower_left_corner: Point3,
