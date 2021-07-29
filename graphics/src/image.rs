@@ -12,7 +12,6 @@ use std::time::Instant;
 use std::fmt;
 
 use indicatif::{FormattedDuration, ProgressBar, ProgressStyle};
-use rand::{thread_rng, Rng};
 
 #[derive(Clone, Copy)]
 struct Pixel {
@@ -63,8 +62,8 @@ impl Image {
                     for i in 0..image_width {
                         let mut pixel_color = Color::new(0.0, 0.0, 0.0);
                         for _ in 0..samples_per_pixel {
-                            let rand1: f64 = rand();
-                            let rand2: f64 = rand();
+                            let rand1: f64 = rand_f64();
+                            let rand2: f64 = rand_f64();
                             let u: f64 = (i as f64 + rand1) / ((image_width - 1) as f64);
                             let v: f64 = (j as f64 + rand2) / ((image_height - 1) as f64);
                             let r = cam.get_ray(u, v);
@@ -103,11 +102,6 @@ impl Image {
         );
         output
     }
-}
-
-fn rand() -> f64 {
-    let mut rng = thread_rng();
-    rng.gen_range(0.0..1.0)
 }
 
 impl Pixel {
