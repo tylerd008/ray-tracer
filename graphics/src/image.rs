@@ -1,10 +1,9 @@
 use crate::camera::Camera;
-use crate::color::write_color;
-use crate::color::Color;
 use crate::hittable::Hittable;
 use crate::hittable_list::HittableList;
 use crate::ray::Ray;
 use crate::utils::*;
+use crate::Color;
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::thread;
@@ -47,6 +46,8 @@ impl Image {
             ProgressStyle::default_bar()
                 .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {percent}% ({eta_precise})"), //idk why the colors aren't working
         );
+
+        let beginning = Instant::now();
         let mut handles = vec![];
         let mut start = 0;
         for z in 0..THREAD_NUM {
@@ -95,6 +96,11 @@ impl Image {
                 output.pixels.push(*pixl);
             }
         }
+        pb.finish_and_clear();
+        eprintln!(
+            "Scene rendered in {}",
+            FormattedDuration(beginning.elapsed())
+        );
         output
     }
 }

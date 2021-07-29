@@ -1,27 +1,11 @@
-use crate::camera::Camera;
-use crate::color::*;
 use crate::hittable::{HitRecord, Hittable};
 use crate::hittable_list::HittableList;
 use crate::material::{Dielectric, Lambertian, Material, Metal};
-use crate::ray::*;
-use crate::render_scene;
 use crate::sphere::Sphere;
 use crate::utils::*;
-use indicatif::{HumanDuration, ProgressBar, ProgressStyle};
+use crate::Color;
+use crate::Point3;
 use std::sync::Arc;
-use std::time::Instant;
-
-use rand::{thread_rng, Rng};
-
-fn rand_f64() -> f64 {
-    let mut rng = thread_rng();
-    rng.gen_range(0.0..1.0)
-}
-
-fn rand_f64_range(min: f64, max: f64) -> f64 {
-    let mut rng = thread_rng();
-    rng.gen_range(min..max)
-}
 
 pub fn random_scene() -> HittableList {
     let mut world = HittableList::new();

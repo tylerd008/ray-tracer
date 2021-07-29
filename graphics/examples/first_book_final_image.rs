@@ -1,7 +1,7 @@
 use graphics::camera::Camera;
-use graphics::ray::Point3;
-use graphics::render_scene;
+use graphics::image::Image;
 use graphics::scenes::random_scene;
+use graphics::Point3;
 use vek::vec::Vec3;
 
 fn main() {
@@ -33,12 +33,13 @@ fn main() {
         dist_to_focus,
     );
 
-    render_scene(
+    let im = Image::render_scene(
         IMAGE_WIDTH,
         IMAGE_HEIGHT,
         SAMPLES_PER_PIXEL,
         MAX_DEPTH,
         cam,
         world,
-    )
+    );
+    println!("{}", im);
 }

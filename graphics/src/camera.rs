@@ -1,5 +1,6 @@
-use crate::ray::{Point3, Ray};
+use crate::ray::Ray;
 use crate::utils::*;
+use crate::Point3;
 use vek::vec::Vec3;
 
 #[derive(Clone)]

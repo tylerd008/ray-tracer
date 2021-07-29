@@ -1,7 +1,7 @@
-use crate::color::Color;
 use crate::hittable::HitRecord;
 use crate::ray::Ray;
 use crate::utils::*;
+use crate::Color;
 use rand::{thread_rng, Rng};
 use vek::vec::Vec3;
 

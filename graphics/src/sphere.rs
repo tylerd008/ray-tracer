@@ -1,6 +1,7 @@
 use crate::hittable::{HitRecord, Hittable};
 use crate::material::Material;
-use crate::ray::{Point3, Ray};
+use crate::ray::Ray;
+use crate::Point3;
 use std::sync::Arc;
 use vek::vec::Vec3;
 

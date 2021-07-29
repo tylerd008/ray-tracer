@@ -1,5 +1,5 @@
+use crate::Point3;
 use vek::vec::Vec3;
-pub type Point3 = Vec3<f64>;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Ray {

@@ -1,6 +1,6 @@
 use crate::material::Material;
-use crate::ray::{Point3, Ray};
-use std::rc::Rc;
+use crate::ray::Ray;
+use crate::Point3;
 use std::sync::Arc;
 use vek::vec::Vec3;
 
