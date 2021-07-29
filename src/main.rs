@@ -10,10 +10,10 @@ use std::sync::Arc;
 use vek::vec::Vec3;
 fn main() {
     //image dimensions
-    const ASPECT_RATIO: f64 = 3.0 / 2.0;
-    const IMAGE_WIDTH: usize = 1200;
+    const ASPECT_RATIO: f64 = 16.0 / 9.0;
+    const IMAGE_WIDTH: usize = 400;
     const IMAGE_HEIGHT: usize = ((IMAGE_WIDTH as f64) / ASPECT_RATIO) as usize;
-    const SAMPLES_PER_PIXEL: usize = 500;
+    const SAMPLES_PER_PIXEL: usize = 100;
     const MAX_DEPTH: usize = 50;
 
     //world setup
@@ -35,6 +35,7 @@ fn main() {
         ASPECT_RATIO,
         aperture,
         dist_to_focus,
+        0.0..1.0,
     );
 
     let im = Image::render_scene(

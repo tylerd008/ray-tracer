@@ -25,7 +25,7 @@ impl Lambertian {
 }
 
 impl Material for Lambertian {
-    fn scatter(&self, _r_in: &Ray, rec: &HitRecord) -> Option<ScatterData> {
+    fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<ScatterData> {
         let mut scatter_direction = rec.normal + random_unit_vector(); //feel like i should be able to write this without needing it to be mut
 
         if scatter_direction.is_approx_zero() {
@@ -33,7 +33,7 @@ impl Material for Lambertian {
         }
 
         Some(ScatterData {
-            scattered_ray: Ray::new(rec.p, scatter_direction),
+            scattered_ray: Ray::new(rec.p, scatter_direction, r_in.time),
             attenuation: self.albedo,
         })
     }
@@ -54,7 +54,11 @@ impl Metal {
 impl Material for Metal {
     fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<ScatterData> {
         let reflected = unit_vector(r_in.direction).reflected(rec.normal);
-        let scattered = Ray::new(rec.p, reflected + self.fuzz * random_in_unit_sphere());
+        let scattered = Ray::new(
+            rec.p,
+            reflected + self.fuzz * random_in_unit_sphere(),
+            r_in.time,
+        );
 
         if Vec3::dot(scattered.direction, rec.normal) > 0.0 {
             Some(ScatterData {
@@ -111,7 +115,7 @@ impl Material for Dielectric {
 
         Some(ScatterData {
             attenuation: Color::new(1.0, 1.0, 1.0),
-            scattered_ray: Ray::new(rec.p, direction),
+            scattered_ray: Ray::new(rec.p, direction, r_in.time),
         })
     }
 }

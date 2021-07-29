@@ -2,6 +2,7 @@ use crate::hittable::{HitRecord, Hittable};
 use crate::material::Material;
 use crate::ray::Ray;
 use crate::Point3;
+use std::ops::Range;
 use std::sync::Arc;
 use vek::vec::Vec3;
 
@@ -9,21 +10,55 @@ pub struct Sphere {
     center: Point3,
     radius: f64,
     mat_ptr: Arc<dyn Material + Send + Sync>,
+    movement: Option<Movement>,
+}
+
+pub struct Movement {
+    time: Range<f64>,
+    end_point: Point3,
+}
+
+impl Movement {
+    pub fn new(time: Range<f64>, end_point: Point3) -> Self {
+        Self { time, end_point }
+    }
 }
 
 impl Sphere {
-    pub fn new(center: Point3, radius: f64, mat_ptr: Arc<dyn Material + Send + Sync>) -> Self {
+    pub fn new(
+        center: Point3,
+        radius: f64,
+        mat_ptr: Arc<dyn Material + Send + Sync>,
+        movement: Option<Movement>,
+    ) -> Self {
         Self {
             center,
             radius,
             mat_ptr,
+            movement,
+        }
+    }
+}
+
+impl Sphere {
+    pub fn center(&self, t: f64) -> Point3 {
+        if let Some(mvmt) = &self.movement {
+            self.center
+                + ((t - mvmt.time.start) / (mvmt.time.end - mvmt.time.start))
+                    * (mvmt.end_point - self.center)
+        } else {
+            self.center
         }
     }
 }
 
 impl Hittable for Sphere {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
-        let oc = r.origin - self.center;
+        let oc = if let Some(_) = self.movement {
+            r.origin - self.center(r.time)
+        } else {
+            r.origin - self.center
+        };
         let a = r.direction.magnitude_squared();
         let half_b = Vec3::dot(oc, r.direction);
         let c = oc.magnitude_squared() - self.radius * self.radius;
@@ -42,7 +77,12 @@ impl Hittable for Sphere {
             }
         }
         let p = r.at(root);
-        let outward_normal = (p - self.center) / self.radius;
+        let outward_normal = if let Some(_) = self.movement {
+            //maybe roll the 2 if lets into 1 somehow
+            p - self.center(r.time) / self.radius
+        } else {
+            (p - self.center) / self.radius
+        };
 
         Some(HitRecord {
             t: root,
