@@ -5,9 +5,10 @@ use crate::sphere::{Movement, Sphere};
 use crate::utils::*;
 use crate::Color;
 use crate::Point3;
+use std::ops::Range;
 use std::sync::Arc;
 
-pub fn random_scene() -> HittableList {
+pub fn random_scene(time: &Option<Range<f64>>) -> HittableList {
     let mut world = HittableList::new();
     let ground_mat = Arc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
     world.add(Arc::new(Sphere::new(
@@ -32,8 +33,12 @@ pub fn random_scene() -> HittableList {
                     let albedo = random_vec() * random_vec();
                     sphere_mat = Arc::new(Lambertian::new(albedo));
                     let end_point = center + Point3::new(0.0, rand_f64_range(0.0, 0.5), 0.0);
-                    let mvmt = Movement::new(0.0..1.0, end_point);
-                    world.add(Arc::new(Sphere::new(center, 0.2, sphere_mat, Some(mvmt))));
+                    let mvmt = if let Some(t) = time {
+                        Some(Movement::new(t.clone(), end_point))
+                    } else {
+                        None
+                    };
+                    world.add(Arc::new(Sphere::new(center, 0.2, sphere_mat, mvmt)));
                 } else if choose_mat < 0.95 {
                     let albedo = random_vec_range(0.5, 1.0);
                     let fuzz = rand_f64_range(0.0, 0.5);

@@ -1,3 +1,4 @@
+use crate::aabb::AABB;
 use crate::hittable::{HitRecord, Hittable};
 use crate::material::Material;
 use crate::ray::Ray;
@@ -91,5 +92,25 @@ impl Hittable for Sphere {
             mat_ptr: self.mat_ptr.clone(),
             front_face: Vec3::dot(r.direction, outward_normal) < 0.0,
         })
+    }
+
+    fn bounding_box(&self, time: Range<f64>) -> Option<AABB> {
+        let output = if let Some(_) = self.movement {
+            let box1 = AABB::new(
+                self.center(time.start) - Point3::new(self.radius, self.radius, self.radius),
+                self.center(time.start) + Point3::new(self.radius, self.radius, self.radius),
+            );
+            let box2 = AABB::new(
+                self.center(time.end) - Point3::new(self.radius, self.radius, self.radius),
+                self.center(time.end) + Point3::new(self.radius, self.radius, self.radius),
+            );
+            AABB::surrounding_box(box1, box2)
+        } else {
+            AABB::new(
+                self.center - Point3::new(self.radius, self.radius, self.radius),
+                self.center + Point3::new(self.radius, self.radius, self.radius),
+            )
+        };
+        Some(output)
     }
 }

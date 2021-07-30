@@ -14,7 +14,7 @@ fn main() {
 
     //world setup
 
-    let world = random_scene();
+    let world = random_scene(&None);
 
     //camera setup
 
@@ -31,7 +31,7 @@ fn main() {
         ASPECT_RATIO,
         aperture,
         dist_to_focus,
-        0.0..0.0,
+        None,
     );
 
     let im = Image::render_scene(

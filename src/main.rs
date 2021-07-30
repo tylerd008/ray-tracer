@@ -9,6 +9,7 @@ use graphics::Point3;
 use std::sync::Arc;
 use vek::vec::Vec3;
 fn main() {
+    let time = Some(0.0..1.0);
     //image dimensions
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_WIDTH: usize = 400;
@@ -18,7 +19,7 @@ fn main() {
 
     //world setup
 
-    let world = random_scene();
+    let world = random_scene(&time);
 
     //camera setup
 
@@ -35,7 +36,7 @@ fn main() {
         ASPECT_RATIO,
         aperture,
         dist_to_focus,
-        0.0..1.0,
+        time,
     );
 
     let im = Image::render_scene(

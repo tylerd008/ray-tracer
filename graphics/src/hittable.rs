@@ -1,6 +1,8 @@
+use crate::aabb::AABB;
 use crate::material::Material;
 use crate::ray::Ray;
 use crate::Point3;
+use std::ops::Range;
 use std::sync::Arc;
 use vek::vec::Vec3;
 
@@ -26,4 +28,5 @@ impl HitRecord {
 
 pub trait Hittable {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
+    fn bounding_box(&self, time: Range<f64>) -> Option<AABB>;
 }

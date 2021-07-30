@@ -14,7 +14,7 @@ pub struct Camera {
     v: Vec3<f64>,
     w: Vec3<f64>,
     lens_radius: f64,
-    time: Range<f64>,
+    time: Option<Range<f64>>,
 }
 
 impl Camera {
@@ -26,7 +26,7 @@ impl Camera {
         aspect_ratio: f64,
         aperture: f64,
         focus_dist: f64,
-        time: Range<f64>,
+        time: Option<Range<f64>>,
     ) -> Self {
         let theta = vfov * (std::f64::consts::PI / 180.0);
         let h = (theta / 2.0).tan();
@@ -59,10 +59,15 @@ impl Camera {
     pub fn get_ray(&self, s: f64, t: f64) -> Ray {
         let rd = self.lens_radius * random_in_unit_disk();
         let offset = self.u * rd.x + self.v * rd.y;
+        let time = if let Some(t) = &self.time {
+            rand_f64_range(t.start, t.end)
+        } else {
+            0.0
+        };
         Ray::new(
             self.origin + offset,
             self.lower_left_corner + s * self.horizontal + t * self.vertical - self.origin - offset,
-            rand_f64_range(self.time.start, self.time.end),
+            time,
         )
     }
 }

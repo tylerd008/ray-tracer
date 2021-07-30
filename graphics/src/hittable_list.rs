@@ -1,5 +1,7 @@
+use crate::aabb::AABB;
 use crate::hittable::{HitRecord, Hittable};
 use crate::ray::Ray;
+use std::ops::Range;
 use std::sync::Arc;
 
 #[derive(Clone)]
@@ -35,5 +37,33 @@ impl Hittable for HittableList {
             };
         }
         rec
+    }
+    fn bounding_box(&self, time: Range<f64>) -> Option<AABB> {
+        if self.objects.is_empty() {
+            return None;
+        }
+
+        let mut output_box: Option<AABB> = None;
+        let mut temp_box: Option<AABB>;
+
+        let mut first_box = true;
+        for object in &self.objects {
+            temp_box = object.bounding_box(time.clone());
+            if let None = temp_box {
+                return None;
+            }
+
+            output_box = if first_box {
+                temp_box
+            } else {
+                Some(AABB::surrounding_box(
+                    output_box.unwrap(),
+                    temp_box.unwrap(),
+                ))
+            };
+            first_box = false;
+        }
+
+        output_box
     }
 }
