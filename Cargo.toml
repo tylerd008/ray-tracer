@@ -11,4 +11,4 @@ graphics = {path = "graphics"}
 vek = "0.15.1"
 
 [workspace]
-members = ["graphics"]
+members = ["graphics", "physics"]
