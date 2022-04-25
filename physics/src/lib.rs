@@ -25,13 +25,20 @@ struct Collision
 struct Physics
     contains physical data: mass (f64), velocity (vec3), total forces acting upon object (vec3), air resistance (f64), friction (f64), spring constant (f64) etc
     should have update function that runs each frame, updating object based on the forces acting upon it: eg. gravity, collision, friction, air resistance
-    actually I think this should be a trait
+    actually I think this should be a trait, actually could have struct for data, and trait for methods
+        potential trait methods:
+            get_mass(&self), get_vel(&self, time: f64) -> Vec3, get_pos(&self, time: f64) -> point3, get_force_vec(&self, time: f64) -> Vec3
     updates based on real time, not limited by frame rate
 
 struct Object
     has collision and physics
     appearance determined by stuff from graphics package
     maybe should have Option<Physics> so we can make static objects
+    struct Object{
+        gfx: Option<Box<dyn Graphical>>
+        phys: Option<Physics>
+        collision: Option<Box<dyn Collidable>>
+    }
 
 Gravity:
     source could be a point with a defined mass
@@ -42,8 +49,14 @@ struct Surface
     the physical impact would be negligable but it would be easier to think about and maybe improve rendering times
 
 
-
 Example scene: ball slides down ramp
+    ball: has physics and collision
+        struct sphere
+            center: point3
+            radius: f64
+            physics: Option<Physics>
+
+        impl collision
     initialize with ball placed up a slope, gravity source placed somewhere far below so the ball will move down
     ball experiences gravity scaled by sin of angle of ramp, and slides down ramp accordingly
     ramp should be static and not experience physics, e.g. won't move in the gravitational field and wont be affected by ball pushing back on it, so should use collidable but not physical
